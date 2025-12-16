@@ -1,0 +1,23 @@
+name: Docker CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build Docker Image
+      run: docker build -t devops-starter .
+
+    - name: Login DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Tag & Push
+      run: |
+        docker tag devops-starter ${{ secrets.DOCKER_USERNAME }}/devops-starter:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/devops-starter:latest
